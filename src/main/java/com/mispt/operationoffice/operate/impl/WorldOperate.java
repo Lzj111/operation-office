@@ -4,6 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFChart;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -11,6 +14,7 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -124,6 +128,16 @@ public class WorldOperate extends BaseOperate {
      * @param chart
      */
     public void handleChart(XWPFChart chart) {
-        System.out.println(chart);
+        try {
+            // 1>查看里面的图表数据，才能知道是什么图表
+            CTPlotArea plot = chart.getCTChart().getPlotArea();
+            XSSFWorkbook workbook = chart.getWorkbook();
+            XSSFSheet sheet = workbook.getSheetAt(0);
+
+
+        } catch (Exception e) {
+            logger.error("处理图表类型的PPT组件异常：", e);
+        }
+
     }
 }
