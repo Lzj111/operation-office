@@ -15,6 +15,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTAxDataSource;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarChart;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarSer;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTLineChart;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTLineSer;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumDataSource;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumVal;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTPieChart;
@@ -113,6 +115,19 @@ public class ChartUtil {
                     // >>> 获取图表的一个系列对象
                     CTPieSer ser = pieChart.getSerList().get(i);
                     // >>> getTx:系列的标题缓存; getCat:维度的数据缓存; getVal:数据的缓存
+                    updateChartCatAndNum(seriesDatas.get(i), ser.getTx(), ser.getCat(), ser.getVal());
+                }
+            }
+            // 3> 折线图
+            else if (!plot.getLineChartList().isEmpty()) {
+                // >> 更新图表Excel的数据
+                updateChartExcelV(seriesDatas, workbook, sheet);
+                // >> 获取<c:lineChart>的xml对象
+                CTLineChart lineChart = plot.getLineChartArray(0);
+                // >> 更新chart的缓存数据
+                for (int i = 0; i < lineChart.getSerList().size(); i++) {
+                    // >>> 获取图表的一个系列对象
+                    CTLineSer ser = lineChart.getSerList().get(i);
                     updateChartCatAndNum(seriesDatas.get(i), ser.getTx(), ser.getCat(), ser.getVal());
                 }
             }
