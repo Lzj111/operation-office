@@ -57,14 +57,6 @@ public class ChartUtil {
                         new NameDouble("2014275班", Math.random() * 100),
                         new NameDouble("2014276班", Math.random() * 100)
                 ))
-//                new SeriesData("四年级", Arrays.asList(
-//                        new NameDouble("2014271班", Math.random() * 100),
-//                        new NameDouble("2014272班", Math.random() * 100),
-//                        new NameDouble("2014273班", Math.random() * 100),
-//                        new NameDouble("2014274班", Math.random() * 100),
-//                        new NameDouble("2014275班", Math.random() * 100),
-//                        new NameDouble("2014276班", Math.random() * 100)
-//                ))
         );
         return seriesDatas;
     }
