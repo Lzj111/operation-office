@@ -23,6 +23,11 @@ public abstract class BaseOperate implements IOperate {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
+     * 已选文件路径
+     */
+    private String selFilePath = "";
+
+    /**
      * 毫秒格式化
      *
      * @param mss 毫秒
@@ -60,6 +65,7 @@ public abstract class BaseOperate implements IOperate {
             System.out.println("> 用户选择的文件路径:" + filePath);
             if (!filePath.contains("null")) {
                 // 2> 执行处理逻辑
+                selFilePath = filePath;
                 execLogic(filePath);
             }
 

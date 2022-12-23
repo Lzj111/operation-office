@@ -190,7 +190,7 @@ public class PPTOperate extends BaseOperate {
             // 3> 调用更新图表数据(excel)
             CTPlotArea plot = chart.getCTChart().getPlotArea();
             XSSFWorkbook workbook = chart.getWorkbook();
-            ChartUtil.updateChartData(seriesDatas, plot, workbook);
+            ChartUtil.updateChartData(seriesDatas, plot, workbook, chart);
         } catch (Exception e) {
             logger.error("处理图表类型的PPT组件异常：", e);
         }
