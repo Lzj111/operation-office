@@ -1,5 +1,7 @@
 package com.mispt.operationoffice.operate.impl;
 
+import com.mispt.operationoffice.entity.SeriesData;
+import com.mispt.operationoffice.utils.ChartUtil;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -129,12 +131,13 @@ public class WorldOperate extends BaseOperate {
      */
     public void handleChart(XWPFChart chart) {
         try {
-            // 1>查看里面的图表数据，才能知道是什么图表
+            // 1> 准备数据(系列数据)
+            List<SeriesData> seriesDatas = ChartUtil.getSeriesDataList();
+
+            // 2> 调用更新图表数据(excel)
             CTPlotArea plot = chart.getCTChart().getPlotArea();
             XSSFWorkbook workbook = chart.getWorkbook();
-            XSSFSheet sheet = workbook.getSheetAt(0);
-
-
+            ChartUtil.updateChartData(seriesDatas, plot, workbook);
         } catch (Exception e) {
             logger.error("处理图表类型的PPT组件异常：", e);
         }
