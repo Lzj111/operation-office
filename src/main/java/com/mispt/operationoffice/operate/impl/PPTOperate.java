@@ -1,18 +1,14 @@
 package com.mispt.operationoffice.operate.impl;
 
-import com.mispt.operationoffice.entity.NameDouble;
+import com.mispt.operationoffice.entity.DataReplace;
+import com.mispt.operationoffice.entity.ReplaceValue;
 import com.mispt.operationoffice.entity.SeriesData;
 import com.mispt.operationoffice.utils.ChartUtil;
 import java.awt.Color;
-import java.awt.FileDialog;
-import java.awt.Frame;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFChart;
 import org.apache.poi.xslf.usermodel.XSLFGraphicFrame;
@@ -23,18 +19,8 @@ import org.apache.poi.xslf.usermodel.XSLFTable;
 import org.apache.poi.xslf.usermodel.XSLFTableCell;
 import org.apache.poi.xslf.usermodel.XSLFTableRow;
 import org.apache.poi.xslf.usermodel.XSLFTextShape;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTAxDataSource;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarChart;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarSer;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumDataSource;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumVal;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTSerTx;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTStrVal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -133,13 +119,16 @@ public class PPTOperate extends BaseOperate {
             return;
         }
 
-        String speed = "{jindu}";
-        String speedStr = Math.ceil(Math.random() * 100) + "%";
-        // 包含变量：{jindu} 替换
-        if (txtContent.contains(speed)) {
-            System.out.println(">> 文本组件的内容：" + txtContent + ";" + speed + "->" + speedStr);
-            txShape.setText(txtContent.replace(speed, speedStr));
-        }
+        List<ReplaceValue> textList = dataReplace.getText();
+        textList.forEach(data -> {
+            String code = data.getCode();
+            String value = data.getValue().toString();
+            // 文本包含替换code
+            if (txtContent.contains(code)) {
+                System.out.println(">> 文本组件的内容：" + txtContent + ";" + code + "->" + value);
+                txShape.setText(txtContent.replace(code, value));
+            }
+        });
     }
 
     /**
@@ -150,7 +139,7 @@ public class PPTOperate extends BaseOperate {
         StringBuilder sb = new StringBuilder();
         XSLFTable table = (XSLFTable) shape;
         List<XSLFTableRow> rows = table.getRows();
-
+        List<ReplaceValue> datas = dataReplace.getTable();
         // > 循环行
         for (int rowIndex = 0; rowIndex < rows.size(); rowIndex++) {
             XSLFTableRow row = rows.get(rowIndex);
@@ -159,14 +148,27 @@ public class PPTOperate extends BaseOperate {
             for (int cellIndex = 0; cellIndex < cells.size(); cellIndex++) {
                 XSLFTableCell cell = cells.get(cellIndex);
                 String cellTxt = cell.getText();
-                String replTxt = String.valueOf(Math.ceil(Math.random() * 100));
-                sb.append("\t").append(cellTxt).append((cellIndex > 0 && rowIndex > 0) ? "->" + replTxt : "");
-
-                // 更新表格内容
-                if (rowIndex > 0 && cellIndex > 0) {
-                    cell.setText(replTxt);
-                    cell.setFillColor(new Color(207, 171, 255));
+                // > 从配置中读取替换对象
+                for (int i = 0; i < datas.size(); i++) {
+                    ReplaceValue data = datas.get(i);
+                    String code = data.getCode();
+                    String value = data.getValue().toString();
+                    // >> 如果表格内容==配置编码,则替换内容
+                    if (cellTxt.equals(code)) {
+                        sb.append("\t").append(cellTxt).append((cellIndex > 0 && rowIndex > 0) ? "->" + value : "");
+                        cell.setText(value);
+                        cell.setFillColor(new Color(207, 171, 255));
+                    }
                 }
+
+                // 写死的方式先注释掉
+//                String replTxt = String.valueOf(Math.ceil(Math.random() * 100));
+//                sb.append("\t").append(cellTxt).append((cellIndex > 0 && rowIndex > 0) ? "->" + replTxt : "");
+//                // 更新表格内容
+//                if (rowIndex > 0 && cellIndex > 0) {
+//                    cell.setText(replTxt);
+//                    cell.setFillColor(new Color(207, 171, 255));
+//                }
             }
             sb.append("\n");
         }

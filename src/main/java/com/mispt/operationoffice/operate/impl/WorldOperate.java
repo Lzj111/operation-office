@@ -1,5 +1,6 @@
 package com.mispt.operationoffice.operate.impl;
 
+import com.mispt.operationoffice.entity.ReplaceValue;
 import com.mispt.operationoffice.entity.SeriesData;
 import com.mispt.operationoffice.utils.ChartUtil;
 import java.io.FileInputStream;
@@ -71,13 +72,17 @@ public class WorldOperate extends BaseOperate {
             System.out.println("段落文本：" + text);
 
             if (!StringUtils.isEmpty(text)) {
-                // >替换文本内容
-                String speed = "{money}";
-                String speedStr = String.valueOf(Math.ceil(Math.random() * 100));
-                if (text.contains(speed)) {
-                    text = text.replace(speed, speedStr);
-                    // 把替换好的文本内容，保存到当前这个文本对象
-                    item.setText(text, 0);
+                List<ReplaceValue> textList = dataReplace.getText();
+                for (int i = 0; i < textList.size(); i++) {
+                    ReplaceValue data = textList.get(i);
+                    String code = data.getCode();
+                    String value = data.getValue().toString();
+                    // >替换文本内容
+                    if (text.contains(code)) {
+                        text = text.replace(code, value);
+                        // 把替换好的文本内容，保存到当前这个文本对象
+                        item.setText(text, 0);
+                    }
                 }
             }
         });

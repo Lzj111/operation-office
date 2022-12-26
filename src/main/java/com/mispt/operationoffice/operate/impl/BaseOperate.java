@@ -1,11 +1,15 @@
 package com.mispt.operationoffice.operate.impl;
 
+import com.mispt.operationoffice.entity.DataReplace;
 import com.mispt.operationoffice.entity.OperateType;
 import com.mispt.operationoffice.operate.IOperate;
 import java.awt.FileDialog;
 import java.awt.Frame;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @Classname BaseOperate
@@ -26,6 +30,12 @@ public abstract class BaseOperate implements IOperate {
      * 已选文件路径
      */
     private String selFilePath = "";
+
+    /**
+     * 数据替换
+     */
+    @Autowired
+    public DataReplace dataReplace;
 
     /**
      * 毫秒格式化

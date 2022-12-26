@@ -4,3 +4,23 @@ server:
 spring:
   application:
     name: operation-office
+
+# 数据替换
+data-replace:
+  text:
+    - code: "{jindu}"
+      value: 80%
+  chart:
+    - code: "{c_r1_c1}"
+      value: 1
+    - code: "{c_r2_c1}"
+      value: 2
+    - code: "{c_r3_c1}"
+      value: 3
+    - code: "{c_r4_c1}"
+      value: 4
+  table:
+    - code: "{t_r1_c1}"
+      value: 1
+    - code: "{t_r2_c1}"
+      value: 2
