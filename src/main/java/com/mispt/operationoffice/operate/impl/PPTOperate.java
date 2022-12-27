@@ -144,31 +144,20 @@ public class PPTOperate extends BaseOperate {
         for (int rowIndex = 0; rowIndex < rows.size(); rowIndex++) {
             XSLFTableRow row = rows.get(rowIndex);
             List<XSLFTableCell> cells = row.getCells();
-            // > 循环列
+            // >> 循环列
             for (int cellIndex = 0; cellIndex < cells.size(); cellIndex++) {
                 XSLFTableCell cell = cells.get(cellIndex);
                 String cellTxt = cell.getText();
-                // > 从配置中读取替换对象
-                for (int i = 0; i < datas.size(); i++) {
-                    ReplaceValue data = datas.get(i);
-                    String code = data.getCode();
-                    String value = data.getValue().toString();
-                    // >> 如果表格内容==配置编码,则替换内容
-                    if (cellTxt.equals(code)) {
-                        sb.append("\t").append(cellTxt).append((cellIndex > 0 && rowIndex > 0) ? "->" + value : "");
-                        cell.setText(value);
-                        cell.setFillColor(new Color(207, 171, 255));
-                    }
+                // >>> 从配置中读取替换对象
+                ReplaceValue replaceValue = ChartUtil.getReplaceValueContainsKey(datas, cellTxt);
+                if (null == replaceValue) {
+                    continue;
                 }
 
-                // 写死的方式先注释掉
-//                String replTxt = String.valueOf(Math.ceil(Math.random() * 100));
-//                sb.append("\t").append(cellTxt).append((cellIndex > 0 && rowIndex > 0) ? "->" + replTxt : "");
-//                // 更新表格内容
-//                if (rowIndex > 0 && cellIndex > 0) {
-//                    cell.setText(replTxt);
-//                    cell.setFillColor(new Color(207, 171, 255));
-//                }
+                // >>> 替换文本,设置颜色
+                sb.append("\t").append(cellTxt).append((cellIndex > 0 && rowIndex > 0) ? "->" + replaceValue.getValue() : "");
+                cell.setText(String.valueOf(replaceValue.getValue()));
+                cell.setFillColor(new Color(207, 171, 255));
             }
             sb.append("\n");
         }
@@ -192,7 +181,11 @@ public class PPTOperate extends BaseOperate {
             // 3> 调用更新图表数据(excel)
             CTPlotArea plot = chart.getCTChart().getPlotArea();
             XSSFWorkbook workbook = chart.getWorkbook();
-            ChartUtil.updateChartData(seriesDatas, plot, workbook, chart);
+            // 3.1> 替换所有数据
+//            ChartUtil.updateChartData(seriesDatas, plot, workbook, chart);
+            // 3.2> 替换配置数据
+            List<ReplaceValue> datas = dataReplace.getChart();
+            ChartUtil.updateChartDataConfig(datas, plot, workbook, chart);
         } catch (Exception e) {
             logger.error("处理图表类型的PPT组件异常：", e);
         }

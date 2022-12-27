@@ -93,8 +93,7 @@ public class WorldOperate extends BaseOperate {
      * @param table
      */
     public void handleTable(XWPFTable table) {
-        System.out.println(table);
-
+        List<ReplaceValue> datas = dataReplace.getTable();
         List<XWPFTableRow> tableRows = table.getRows();
         // 1 > 循环所有行
         StringBuilder sb = new StringBuilder(">> 表格组件的内容：\n");
@@ -104,25 +103,27 @@ public class WorldOperate extends BaseOperate {
             // 2> 循环当前行的所有列
             List<XWPFTableCell> cells = row.getTableCells();
             for (int j = 0; j < cells.size(); j++) {
+                // >> 获取单元格文本值
                 XWPFTableCell cell = cells.get(j);
                 String cellTxt = cell.getText();
-                String replTxt = String.valueOf(Math.ceil(Math.random() * 100));
-
                 if (StringUtils.isEmpty(cellTxt)) {
                     continue;
                 }
-                // 3>> 第2行开始，第4列开始替换值
-                if (i > 0 && i < tableRows.size() - 1 && j > 2) {
-                    // 注意，getParagraphs一定不能漏掉
-                    // 因为一个表格里面可能会有多个需要替换的文字
-                    // 如果没有这个步骤那么文字会替换不了
-                    for (XWPFParagraph p : cell.getParagraphs()) {
-                        for (XWPFRun r : p.getRuns()) {
-                            r.setText(replTxt, 0);
-                        }
-                    }
-                    cell.setColor("cfabff");
+                // >> 从配置中读取替换对象
+                ReplaceValue replaceValue = ChartUtil.getReplaceValueContainsKey(datas, cellTxt);
+                if (null == replaceValue) {
+                    continue;
                 }
+
+                // 3> 根据是否匹配到配置来替换值
+                // 注意，getParagraphs一定不能漏掉,因为一个表格里面可能会有多个需要替换的文字,如果没有这个步骤那么文字会替换不了
+                String replTxt = replaceValue.getValue().toString();
+                for (XWPFParagraph p : cell.getParagraphs()) {
+                    for (XWPFRun r : p.getRuns()) {
+                        r.setText(replTxt, 0);
+                    }
+                }
+                cell.setColor("cfabff");
                 sb.append("\t" + cellTxt + "->" + replTxt);
             }
             sb.append("\n");
@@ -142,10 +143,11 @@ public class WorldOperate extends BaseOperate {
             // 2> 调用更新图表数据(excel)
             CTPlotArea plot = chart.getCTChart().getPlotArea();
             XSSFWorkbook workbook = chart.getWorkbook();
-            ChartUtil.updateChartData(seriesDatas, plot, workbook, chart);
+//            ChartUtil.updateChartData(seriesDatas, plot, workbook, chart);
+            List<ReplaceValue> datas = dataReplace.getChart();
+            ChartUtil.updateChartDataConfig(datas, plot, workbook, chart);
         } catch (Exception e) {
             logger.error("处理图表类型的PPT组件异常：", e);
         }
-
     }
 }

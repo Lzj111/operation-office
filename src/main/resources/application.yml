@@ -19,6 +19,8 @@ data-replace:
       value: 3
     - code: "{c_r4_c1}"
       value: 4
+    - code: "{c_r1_c0}"
+      value: "2014271班"
   table:
     - code: "{t_r1_c1}"
       value: 1
