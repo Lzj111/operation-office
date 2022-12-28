@@ -173,7 +173,7 @@ public class ChartUtil {
                     cell = title.createCell(i + 1);
                 }
                 // 系列名称，不能修改，修改后无法打开 excel
-//                cell.setCellValue(new XSSFRichTextString(data.name));
+                cell.setCellValue(data.name);
             }
 
             // >> 循环每一行的系列数据

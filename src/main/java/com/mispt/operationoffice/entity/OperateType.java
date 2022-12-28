@@ -8,5 +8,6 @@ package com.mispt.operationoffice.entity;
  */
 public enum OperateType {
     PPT,
-    WORD
+    WORD,
+    EXCEL,
 }

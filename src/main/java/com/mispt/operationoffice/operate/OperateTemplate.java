@@ -22,6 +22,9 @@ public class OperateTemplate {
             case WORD:
                 beanName = "worldOperate";
                 break;
+            case EXCEL:
+                beanName = "excelOperate";
+                break;
             default:
                 beanName = "operate";
                 break;

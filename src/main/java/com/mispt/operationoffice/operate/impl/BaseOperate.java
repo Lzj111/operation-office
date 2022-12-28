@@ -69,6 +69,9 @@ public abstract class BaseOperate implements IOperate {
                 case WORD:
                     dialog.setFile("*.doc;*.docx");
                     break;
+                case EXCEL:
+                    dialog.setFile("*.xlsx;*.xls");
+                    break;
             }
             dialog.setVisible(true);
             String filePath = dialog.getDirectory() + dialog.getFile();

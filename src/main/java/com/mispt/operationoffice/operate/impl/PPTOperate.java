@@ -182,10 +182,10 @@ public class PPTOperate extends BaseOperate {
             CTPlotArea plot = chart.getCTChart().getPlotArea();
             XSSFWorkbook workbook = chart.getWorkbook();
             // 3.1> 替换所有数据
-//            ChartUtil.updateChartData(seriesDatas, plot, workbook, chart);
+            ChartUtil.updateChartData(seriesDatas, plot, workbook, chart);
             // 3.2> 替换配置数据
-            List<ReplaceValue> datas = dataReplace.getChart();
-            ChartUtil.updateChartDataConfig(datas, plot, workbook, chart);
+//            List<ReplaceValue> datas = dataReplace.getChart();
+//            ChartUtil.updateChartDataConfig(datas, plot, workbook, chart);
         } catch (Exception e) {
             logger.error("处理图表类型的PPT组件异常：", e);
         }

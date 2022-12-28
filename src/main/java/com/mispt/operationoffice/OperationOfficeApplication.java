@@ -18,7 +18,7 @@ public class OperationOfficeApplication {
 
         // 1> 执行
         System.out.println("****************替换PPT/WORD内容******************");
-        System.out.println("******* 请输入编码：0[PPT]，1[Word] ");
+        System.out.println("******* 请输入编码：0[PPT]，1[Word]，2[Excel] ");
         Scanner sca = new Scanner(System.in);
         int type = sca.nextInt();
 
@@ -30,6 +30,9 @@ public class OperationOfficeApplication {
                 break;
             case 1:
                 operateType = OperateType.WORD;
+                break;
+            case 2:
+                operateType = OperateType.EXCEL;
                 break;
         }
         IOperate operate = OperateTemplate.getOperate(operateType);
